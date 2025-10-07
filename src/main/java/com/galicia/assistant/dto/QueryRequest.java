@@ -15,8 +15,7 @@ public class QueryRequest {
     
     public QueryRequest() {
     }
-
-    // Constructor con parámetros
+    
     public QueryRequest(String userId, String userQuery) {
         this.userId = userId;
         this.userQuery = userQuery;

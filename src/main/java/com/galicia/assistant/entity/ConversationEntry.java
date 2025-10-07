@@ -30,12 +30,10 @@ public class ConversationEntry {
     private Instant timestamp;
 
     private String status;
-
-    // Constructor vacío (JPA)
+    
     public ConversationEntry() {
     }
-
-    // Constructor de mapeo
+    
     public ConversationEntry(String conversationId, String userId, String userQuery, String processedIntent, String assistantResponse, Instant timestamp, String status) {
         this.conversationId = conversationId;
         this.userId = userId;
@@ -45,14 +43,12 @@ public class ConversationEntry {
         this.timestamp = timestamp;
         this.status = status;
     }
-
-    // --- Getters y Setters ---
+    
 
     public Long getId() {
         return id;
     }
-
-    // Omito setID() ya que es generado
+    
 
     public String getConversationId() {
         return conversationId;

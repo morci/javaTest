@@ -22,8 +22,7 @@ public class WeatherIntentStrategy implements IntentStrategy {
     public WeatherIntentStrategy(WeatherApiClient weatherApiClient) {
         this.weatherApiClient = weatherApiClient;
     }
-
-    // ------------------ Contrato IntentStrategy ------------------
+    
 
     @Override
     public boolean matches(String userQuery) {
@@ -33,8 +32,8 @@ public class WeatherIntentStrategy implements IntentStrategy {
 
     @Override
     public QueryResponse process(QueryRequest request, String conversationId) {
-        String userQuery = request.getUserQuery(); // No pasar a minúsculas
-        String city = extractCityFromQuery(userQuery); // Extrae la ciudad en formato original
+        String userQuery = request.getUserQuery();
+        String city = extractCityFromQuery(userQuery);
         String intent;
         String responseText;
         String status = "OK";
@@ -73,18 +72,16 @@ public class WeatherIntentStrategy implements IntentStrategy {
         response.setConversationId(conversationId);
         return response;
     }
-
-    // ------------------ Métodos Auxiliares ------------------
-
     /**
-     * Extrae el nombre de la ciudad usando el patrón "ciudad:[nombre]" (hasta punto, signo de interrogación, o fin de línea).
+     * Extrae el nombre de la ciudad del formato "ciudad:[Nombre de la ciudad]".
+     * Maneja espacios y caracteres especiales.
+     * Retorna null si no se encuentra una ciudad válida.
      */
     private String extractCityFromQuery(String query) {
         Pattern pattern = Pattern.compile("ciudad:\\s*([\\p{L} .'-]+)", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(query);
         if (matcher.find()) {
             String city = matcher.group(1).trim();
-            // Elimina posibles puntos o signos de interrogación al final
             city = city.replaceAll("[.¿?]+$", "").trim();
             return city.isEmpty() ? null : city;
         }

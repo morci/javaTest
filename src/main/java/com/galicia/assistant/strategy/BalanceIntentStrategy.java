@@ -18,8 +18,7 @@ public class BalanceIntentStrategy implements IntentStrategy {
         String intent = "INTENT_CHECK_BALANCE";
         String responseText = "Para consultar su saldo, necesitaría verificar su identidad. ";
         String status = "OK";
-
-        // El constructor QueryResponse debe aceptar los parámetros necesarios
+        
         QueryResponse response = new QueryResponse(request.getUserId(), intent, responseText, status);
         response.setConversationId(conversationId);
         return response;

@@ -7,17 +7,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
 
-/**
- * Cliente para interactuar con la API externa de clima (OpenWeatherMap).
- */
 @Service
 public class WeatherApiClient {
 
     private final RestTemplate restTemplate;
     private final String baseUrl;
     private final String apiKey;
-
-    // Usamos el constructor para inyectar RestTemplate y los valores de properties
+    
     public WeatherApiClient(
             RestTemplate restTemplate,
             @Value("${weather.api.base-url}") String baseUrl,
@@ -34,16 +30,14 @@ public class WeatherApiClient {
      * @return Map<String, Object> con la respuesta JSON parseada.
      */
     public Map<String, Object> getWeatherForCity(String city) {
-
-        // 🌟 CORRECCIÓN CLAVE: Usar build().toUri() para forzar la codificación
+        
         java.net.URI uri = UriComponentsBuilder.fromUriString(baseUrl)
                 .queryParam("q", city)
                 .queryParam("appid", apiKey)
                 .queryParam("units", "metric")
                 .build() // Construye el componente de URI
                 .toUri(); // Convierte a objeto URI codificado
-
-        // 🌟 Usar getForObject con el objeto URI, no con el String de la URL
+        
         Map<String, Object> response = restTemplate.getForObject(uri, Map.class);
 
         return response;
