@@ -2,7 +2,6 @@ package com.galicia.assistant.controller;
 
 import com.galicia.assistant.dto.QueryRequest;
 import com.galicia.assistant.dto.QueryResponse;
-// 🌟 Importamos el servicio de procesamiento directamente
 import com.galicia.assistant.service.IntentProcessingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

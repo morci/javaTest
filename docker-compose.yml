@@ -1,0 +1,8 @@
+
+services:
+  assistant-app:
+    build: .
+    image: assistant-app:latest
+    ports:
+      - "8080:8080"
+    restart: unless-stopped

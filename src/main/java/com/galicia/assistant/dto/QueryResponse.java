@@ -3,7 +3,7 @@ package com.galicia.assistant.dto;
 import java.time.Instant;
 import java.util.UUID;
 
-// Este DTO será el mensaje de salida a Kafka, conteniendo la respuesta del asistente.
+// Este DTO será el mensaje de salida, conteniendo la respuesta del asistente.
 public class QueryResponse {
 
     // ID único de la interacción (UUID)

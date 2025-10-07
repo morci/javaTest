@@ -2,19 +2,17 @@ package com.galicia.assistant.dto;
 
 import java.time.Instant;
 
-// Este DTO se usará para la entrada REST y el mensaje de Kafka
+
 public class QueryRequest {
-
-    // UUID del usuario (como String)
+    
     private String userId;
-
-    // Consulta de texto del usuario
+    
     private String userQuery;
-
-    // Marca de tiempo de la consulta
+    
     private Instant timestamp;
 
-    // Constructor vacío requerido por Spring/Jackson
+    private String conversationId;
+    
     public QueryRequest() {
     }
 
@@ -48,6 +46,13 @@ public class QueryRequest {
 
     public void setTimestamp(Instant timestamp) {
         this.timestamp = timestamp;
+    }
+    
+    public String getConversationId() {
+        return conversationId;
+    }
+    public void setConversationId(String conversationId) {
+        this.conversationId = conversationId;
     }
 
     @Override

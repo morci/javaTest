@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -52,7 +51,7 @@ class QueryControllerIntegrationTest {
         // 1. Datos de la petición
         QueryRequest request = new QueryRequest();
         request.setUserId(UUID.randomUUID().toString());
-        request.setUserQuery("¿Qué temperatura hace en Buenos Aires?");
+        request.setUserQuery("¿Qué temperatura hace ciudad:Buenos Aires.");
         request.setTimestamp(Instant.now());
 
         // 2. Mockear respuesta de la API externa
@@ -62,9 +61,6 @@ class QueryControllerIntegrationTest {
         mockResponse.put("main", mockWeatherMain);
 
         when(weatherApiClient.getWeatherForCity(anyString())).thenReturn(mockResponse);
-
-        // 3. Obtener el conteo inicial en la DB
-        long initialCount = conversationRepository.count();
 
         // ACT: Ejecutar la petición HTTP simulada
         mockMvc.perform(post("/api/v1/assistant/query")

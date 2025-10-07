@@ -3,6 +3,9 @@ package com.galicia.assistant.service;
 import com.galicia.assistant.dto.QueryRequest;
 import com.galicia.assistant.dto.QueryResponse;
 import com.galicia.assistant.repository.ConversationRepository;
+import com.galicia.assistant.strategy.BalanceIntentStrategy;
+import com.galicia.assistant.strategy.WeatherIntentStrategy;
+import com.galicia.assistant.strategy.IntentStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +19,7 @@ import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,9 +35,7 @@ class IntentProcessingServiceTest {
     private WeatherApiClient weatherApiClient;
 
     // Inyecta los mocks en la instancia del servicio que vamos a probar
-    @InjectMocks
     private IntentProcessingService intentProcessingService;
-
     private QueryRequest validRequest;
 
     @BeforeEach
@@ -42,6 +44,10 @@ class IntentProcessingServiceTest {
         validRequest = new QueryRequest();
         validRequest.setUserId(UUID.randomUUID().toString());
         validRequest.setTimestamp(Instant.now());
+        // Inyecta las estrategias reales y mocks
+        IntentStrategy balanceStrategy = new BalanceIntentStrategy();
+        IntentStrategy weatherStrategy = new WeatherIntentStrategy(weatherApiClient);
+        intentProcessingService = new IntentProcessingService(conversationRepository, Arrays.asList(balanceStrategy, weatherStrategy));
     }
 
     // --- PRUEBAS DE INTENCIÓN DESCONOCIDA ---
@@ -84,7 +90,7 @@ class IntentProcessingServiceTest {
     @Test
     void processQuery_shouldReturnWeather_whenApiCallIsSuccessful() {
         // Arrange
-        validRequest.setUserQuery("¿Qué tal está el clima en Buenos Aires?");
+        validRequest.setUserQuery("¿Qué tal está el clima ciudad:Buenos Aires.");
 
         // Simulación del JSON de respuesta de la API (solo los campos que usamos)
         Map<String, Object> mockWeatherMain = new LinkedHashMap<>();
@@ -112,18 +118,13 @@ class IntentProcessingServiceTest {
         // Arrange
         validRequest.setUserQuery("¿Qué tal está el clima?");
 
-        // Simula un error 404 del cliente de API (ej. ciudad no válida)
-        when(weatherApiClient.getWeatherForCity(anyString()))
-                .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
-
         // Act
         QueryResponse response = intentProcessingService.processQuery(validRequest);
 
         // Assert
-        assertEquals("INTENT_WEATHER_QUERY_ERROR", response.getProcessedIntent());
-        // 🌟 CORRECCIÓN AQUÍ: Esperar el mensaje específico de HttpClientErrorException
-        assertTrue(response.getAssistantResponse().contains("No pude encontrar el clima"));
-        assertEquals("ERROR_API_CLIENT", response.getServiceStatus());
+        assertEquals("INTENT_WEATHER_MISSING_CITY", response.getProcessedIntent());
+        assertTrue(response.getAssistantResponse().contains("Para saber el clima, necesito la ciudad. Por favor, escriba: ciudad:[Nombre de la ciudad]."));
+        assertEquals("ERROR_BAD_REQUEST", response.getServiceStatus());
         verify(conversationRepository, times(1)).save(any());
     }
 }
