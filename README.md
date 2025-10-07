@@ -14,11 +14,11 @@ Assistant is a Spring Boot application that acts as a banking chatbot. It proces
 ### Main Endpoints
 - `POST /api/v1/assistant/query` : Receives a user query and returns a processed response.
 
-#### Request Example
+#### Request Example (Weather)
 ```json
 {
   "userId": "1234",
-  "userQuery": "What is my balance?"
+  "userQuery": "What is the weather in city:Buenos Aires?"
 }
 ```
 
@@ -27,8 +27,8 @@ Assistant is a Spring Boot application that acts as a banking chatbot. It proces
 {
   "conversationId": "...",
   "userId": "1234",
-  "processedIntent": "INTENT_CHECK_BALANCE",
-  "assistantResponse": "To check your balance, I need to verify your identity.",
+  "processedIntent": "INTENT_WEATHER_QUERY",
+  "assistantResponse": "The current weather in Buenos Aires is 25.5°C.",
   "serviceStatus": "OK",
   "processedTimestamp": "..."
 }
@@ -55,11 +55,11 @@ Assistant es una aplicación Spring Boot que funciona como chatbot bancario. Pro
 ### Endpoints principales
 - `POST /api/v1/assistant/query` : Recibe una consulta y devuelve la respuesta procesada.
 
-#### Ejemplo de petición
+#### Ejemplo de petición (Clima)
 ```json
 {
   "userId": "1234",
-  "userQuery": "¿Cuál es mi saldo?"
+  "userQuery": "¿Qué temperatura hace ciudad:Buenos Aires?"
 }
 ```
 
@@ -68,8 +68,8 @@ Assistant es una aplicación Spring Boot que funciona como chatbot bancario. Pro
 {
   "conversationId": "...",
   "userId": "1234",
-  "processedIntent": "INTENT_CHECK_BALANCE",
-  "assistantResponse": "Para consultar su saldo, necesitaría verificar su identidad.",
+  "processedIntent": "INTENT_WEATHER_QUERY",
+  "assistantResponse": "El clima actual en Buenos Aires es de 25.5°C.",
   "serviceStatus": "OK",
   "processedTimestamp": "..."
 }
@@ -79,4 +79,3 @@ Assistant es una aplicación Spring Boot que funciona como chatbot bancario. Pro
 1. Compilar: `mvn clean package`
 2. Ejecutar: `java -jar target/assistant-0.0.1-SNAPSHOT.jar`
 3. Docker: `docker build -t assistant . && docker run -p 8080:8080 assistant`
-
