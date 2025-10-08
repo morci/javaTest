@@ -35,8 +35,8 @@ public class WeatherApiClient {
                 .queryParam("q", city)
                 .queryParam("appid", apiKey)
                 .queryParam("units", "metric")
-                .build() // Construye el componente de URI
-                .toUri(); // Convierte a objeto URI codificado
+                .build() 
+                .toUri();
         
         Map<String, Object> response = restTemplate.getForObject(uri, Map.class);
 

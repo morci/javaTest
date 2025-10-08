@@ -3,7 +3,7 @@ package com.galicia.assistant.dto;
 import java.time.Instant;
 import java.util.UUID;
 
-public class QueryResponse {
+public class QueryResponse implements java.io.Serializable {
     
     private String conversationId;
 
@@ -21,7 +21,7 @@ public class QueryResponse {
     }
     
     public QueryResponse(String userId, String processedIntent, String assistantResponse, String serviceStatus) {
-        this.conversationId = UUID.randomUUID().toString(); // Genera el ID de conversación aquí
+        this.conversationId = UUID.randomUUID().toString();
         this.userId = userId;
         this.processedIntent = processedIntent;
         this.assistantResponse = assistantResponse;

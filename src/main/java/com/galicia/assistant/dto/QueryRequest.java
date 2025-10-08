@@ -3,7 +3,7 @@ package com.galicia.assistant.dto;
 import java.time.Instant;
 
 
-public class QueryRequest {
+public class QueryRequest implements java.io.Serializable {
     
     private String userId;
     
@@ -21,8 +21,7 @@ public class QueryRequest {
         this.userQuery = userQuery;
         this.timestamp = Instant.now();
     }
-
-    // Getters y Setters
+    
     public String getUserId() {
         return userId;
     }

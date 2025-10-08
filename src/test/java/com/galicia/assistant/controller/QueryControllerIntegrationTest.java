@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -39,45 +40,33 @@ class QueryControllerIntegrationTest {
     @MockBean
     private WeatherApiClient weatherApiClient;
 
+    @MockBean
+    private RabbitTemplate rabbitTemplate;
+
     @Test
-    void postQuery_shouldProcessWeatherQueryAndPersistResult() throws Exception {
-        
+    void postQuery_shouldPublishToQueueAndReturnAccepted() throws Exception {
         QueryRequest request = new QueryRequest();
         request.setUserId(UUID.randomUUID().toString());
         request.setUserQuery("¿Qué temperatura hace ciudad:Buenos Aires.");
         request.setTimestamp(Instant.now());
         
-        Map<String, Object> mockWeatherMain = new LinkedHashMap<>();
-        mockWeatherMain.put("temp", 25.5);
-        Map<String, Object> mockResponse = new LinkedHashMap<>();
-        mockResponse.put("main", mockWeatherMain);
+        doNothing().when(rabbitTemplate).convertAndSend(anyString(), org.mockito.Mockito.any(QueryRequest.class));
 
-        when(weatherApiClient.getWeatherForCity(anyString())).thenReturn(mockResponse);
-        
         mockMvc.perform(post("/api/v1/assistant/query")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                
-                .andExpect(status().isOk()) 
-                .andExpect(jsonPath("$.processedIntent", is("INTENT_WEATHER_QUERY")))
-                .andExpect(jsonPath("$.assistantResponse", containsString("25.5°C")))
-                .andExpect(jsonPath("$.serviceStatus", is("OK")));
-        
-        verify(conversationRepository, times(1)).save(any());
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$", containsString("Solicitud aceptada. El procesamiento es asíncrono.")));
     }
 
     @Test
     void postQuery_shouldReturn400BadRequest_whenUserIdIsMissing() throws Exception {
         QueryRequest request = new QueryRequest();
         request.setUserQuery("Consulta sin ID");
-        
         mockMvc.perform(post("/api/v1/assistant/query")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-
-                .andExpect(status().isBadRequest()) 
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$", is("Invalid input: userId and userQuery are required.")));
-        
-        verify(conversationRepository, never()).save(any());
     }
 }

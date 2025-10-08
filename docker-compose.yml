@@ -1,8 +1,32 @@
-
 services:
+  rabbitmq:
+    build:
+      context: .
+      dockerfile: Dockerfile.rabbitmq
+    container_name: rabbitmq-broker
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 40s
+  
+  
   assistant-app:
     build: .
     image: assistant-app:latest
+    container_name: assistant-app
     ports:
       - "8080:8080"
-    restart: unless-stopped
+  
+    depends_on:
+      rabbitmq:
+        condition: service_healthy 
+    environment:
+      - spring.rabbitmq.host=rabbitmq

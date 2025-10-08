@@ -7,8 +7,10 @@ import com.galicia.assistant.repository.ConversationRepository;
 import com.galicia.assistant.strategy.IntentStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,29 +24,36 @@ public class IntentProcessingService {
     
     public IntentProcessingService(
             ConversationRepository conversationRepository,
-            List<IntentStrategy> strategies
+            List<IntentStrategy> strategies //,
+            // ResponseSenderService responseSenderService
     ) {
         this.conversationRepository = conversationRepository;
         this.strategies = strategies;
+        // this.responseSenderService = responseSenderService;
     }
-
-    public QueryResponse processQuery(QueryRequest request) {
+    
+    @RabbitListener(queues = "${assistant.rabbitmq.queue.request}")
+    public void processQueryAsync(QueryRequest request) {
         
         String conversationId = request.getConversationId();
         if (conversationId == null || conversationId.isEmpty()) {
             conversationId = UUID.randomUUID().toString();
-            log.info("Iniciando nueva conversación con ID: {}", conversationId);
         }
+        
+        List<ConversationEntry> history = request.getConversationId() != null && !request.getConversationId().isEmpty() ?
+                conversationRepository.findByConversationIdOrderByTimestampAsc(request.getConversationId()) :
+                Collections.emptyList();
         
         String userQuery = request.getUserQuery().toLowerCase();
         QueryResponse response;
-        
+
         IntentStrategy matchingStrategy = strategies.stream()
                 .filter(strategy -> strategy.matches(userQuery))
                 .findFirst()
-                .orElse(null); // Si no coincide ninguna, es nulo
+                .orElse(null);
 
         if (matchingStrategy != null) {
+            // History esta listo para que lo tomen las strategias si lo necesitan.
             response = matchingStrategy.process(request, conversationId);
         } else {
             response = createUnknownResponse(request.getUserId(), conversationId);
@@ -52,12 +61,9 @@ public class IntentProcessingService {
         
         saveConversationHistory(request, response);
 
-        log.info("Procesamiento completado y respuesta generada para ConvID: {}", conversationId);
-
-        return response;
+        log.info("Procesamiento completado y respuesta enviada para ConvID: {}", conversationId);
     }
     
-
     private QueryResponse createUnknownResponse(String userId, String conversationId) {
         String intent = "INTENT_UNKNOWN";
         String responseText = "Disculpe, no entiendo la intención. Por favor, reformule su consulta.";

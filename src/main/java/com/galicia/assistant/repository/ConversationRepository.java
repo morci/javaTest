@@ -13,4 +13,6 @@ public interface ConversationRepository extends JpaRepository<ConversationEntry,
     List<ConversationEntry> findByUserIdOrderByTimestampDesc(String userId);
     
     Optional<ConversationEntry> findByConversationId(String conversationId);
+
+    List<ConversationEntry> findByConversationIdOrderByTimestampAsc(String conversationId);
 }

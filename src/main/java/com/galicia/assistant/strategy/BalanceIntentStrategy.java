@@ -4,6 +4,7 @@ import com.galicia.assistant.dto.QueryRequest;
 import com.galicia.assistant.dto.QueryResponse;
 import org.springframework.stereotype.Component;
 
+
 @Component
 public class BalanceIntentStrategy implements IntentStrategy {
 
@@ -14,7 +15,7 @@ public class BalanceIntentStrategy implements IntentStrategy {
     }
 
     @Override
-    public QueryResponse process(QueryRequest request, String conversationId) {
+    public QueryResponse process(QueryRequest request, String conversationId ) {
         String intent = "INTENT_CHECK_BALANCE";
         String responseText = "Para consultar su saldo, necesitaría verificar su identidad. ";
         String status = "OK";
