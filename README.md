@@ -41,6 +41,39 @@ Assistant is a Spring Boot application that acts as a banking chatbot. It proces
 
 ---
 
+# Authentication Example
+
+To use the Assistant API, you must first authenticate and obtain a JWT token.
+
+## 1. Login (Obtain Token)
+
+```bash
+curl --location 'http://localhost:8080/api/v1/auth/login' \
+--header 'Content-Type: application/json' \
+--data '{
+    "username": "user",
+    "password": "password"
+}'
+```
+
+The response will include a JWT token. You must use this token in the Authorization header for subsequent requests.
+
+## 2. Query Example (Authenticated)
+
+```bash
+curl --location 'http://localhost:8080/api/v1/assistant/query' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <token obtenido>' \
+--data '{
+    "userId": "a1b2c3d4-e5f6-4321-7890-000000000001",
+    "userQuery": "quisiera saber el clima ciudad: Buenos Aires."
+}'
+```
+
+Replace `<token obtenido>` with the token received from the login endpoint.
+
+---
+
 ## Español
 
 ### Descripción
@@ -79,3 +112,112 @@ Assistant es una aplicación Spring Boot que funciona como chatbot bancario. Pro
 1. Compilar: `mvn clean package`
 2. Ejecutar: `java -jar target/assistant-0.0.1-SNAPSHOT.jar`
 3. Docker: `docker build -t assistant . && docker run -p 8080:8080 assistant`
+
+---
+
+# Ejemplo de Autenticación
+
+Para usar la API de Assistant, primero debes autenticarte y obtener un token JWT.
+
+## 1. Login (Obtener Token)
+
+```bash
+curl --location 'http://localhost:8080/api/v1/auth/login' \
+--header 'Content-Type: application/json' \
+--data '{
+    "username": "user",
+    "password": "password"
+}'
+```
+
+La respuesta incluirá un token JWT. Debes usar este token en el header Authorization para las siguientes consultas.
+
+## 2. Ejemplo de Consulta (Autenticado)
+
+```bash
+curl --location 'http://localhost:8080/api/v1/assistant/query' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <token obtenido>' \
+--data '{
+    "userId": "a1b2c3d4-e5f6-4321-7890-000000000001",
+    "userQuery": "quisiera saber el clima ciudad: Buenos Aires."
+}'
+```
+
+Reemplaza `<token obtenido>` por el token recibido en el login.
+
+---
+
+## Component Diagram
+
+```
++-------------------+         +-------------------+         +-------------------+
+|   Client (curl)   |  --->   |  API REST Spring  |  --->   |   IntentProcessing|
++-------------------+         +-------------------+         +-------------------+
+        |                           |                              |
+        |  /api/v1/auth/login       |                              |
+        |  /api/v1/assistant/query  |                              |
+        |         |                 |                              |
+        |         v                 |                              |
+        |   Security JWT            |                              |
+        |         |                 |                              |
+        |         v                 |                              |
+        |   AssistantController     |                              |
+        |         |                 |                              |
+        |         v                 |                              |
+        |   IntentProcessingService |                              |
+        |         |                 |                              |
+        |         v                 |                              |
+        |   Strategies (Strategy)   |                              |
+        |   | Balance | Weather |   |                              |
+        |         |                 |                              |
+        |         v                 |                              |
+        |   External API (Weather)  |                              |
+        |         |                 |                              |
+        |         v                 |                              |
+        |   Persistence H2 DB       |                              |
+        +---------------------------+------------------------------+
+```
+
+**Quick Explanation:**
+- The client authenticates and queries using JWT.
+- The controller receives the query and processes it synchronously.
+- The service detects the intent (strategies), queries the external API if necessary, and saves the history in H2.
+
+---
+
+## Diagrama de Componentes
+
+```
++-------------------+         +-------------------+         +-------------------+
+|   Cliente (curl)  |  --->   |  API REST Spring  |  --->   | Procesamiento     |
++-------------------+         +-------------------+         +-------------------+
+        |                           |                              |
+        |  /api/v1/auth/login       |                              |
+        |  /api/v1/assistant/query  |                              |
+        |         |                 |                              |
+        |         v                 |                              |
+        |   Seguridad JWT           |                              |
+        |         |                 |                              |
+        |         v                 |                              |
+        |   Controlador Assistant   |                              |
+        |         |                 |                              |
+        |         v                 |                              |
+        |   IntentProcessingService |                              |
+        |         |                 |                              |
+        |         v                 |                              |
+        |   Estrategias (Strategy)  |                              |
+        |   | Balance | Clima |     |                              |
+        |         |                 |                              |
+        |         v                 |                              |
+        |   API Externa (Clima)     |                              |
+        |         |                 |                              |
+        |         v                 |                              |
+        |   Persistencia H2 DB      |                              |
+        +---------------------------+------------------------------+
+```
+
+**Explicación rápida:**
+- El cliente se autentica y consulta usando JWT.
+- El controlador recibe la consulta y la procesa de forma síncrona.
+- El servicio detecta la intención (estrategias), consulta la API externa si es necesario y guarda el historial en H2.
