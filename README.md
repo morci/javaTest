@@ -1,9 +1,9 @@
-# Assistant - Banking Chatbot
+# Assistant - Chatbot de consultas generales
 
 ## English
 
 ### Overview
-Assistant is a Spring Boot application that acts as a banking chatbot. It processes user queries, detects intents (such as checking balance or weather), and responds accordingly. The app uses the Strategy pattern for intent processing and persists conversation history in an H2 database.
+Assistant is a Spring Boot application that acts as a chatbot capable of answering general queries. It processes user questions, detects intents (such as checking the weather of a city, implemented, or the balance of a bank account, mocked), and responds accordingly. The app uses the Strategy pattern for intent processing and persists conversation history in an H2 database.
 
 ### Architecture
 - **Spring Boot** REST API
@@ -77,7 +77,7 @@ Replace `<token obtenido>` with the token received from the login endpoint.
 ## Español
 
 ### Descripción
-Assistant es una aplicación Spring Boot que funciona como chatbot bancario. Procesa consultas de usuarios, detecta intenciones (como consultar saldo o clima) y responde en consecuencia. Utiliza el patrón Strategy para el procesamiento y guarda el historial en una base H2.
+Assistant es una aplicación Spring Boot que funciona como un chatbot capaz de responder consultas generales. Procesa preguntas de usuarios, detecta intenciones (como consultar el clima de una ciudad, implementado, o el saldo de una cuenta bancaria, mockeado) y responde en consecuencia. La app utiliza el patrón Strategy para el procesamiento de intenciones y persiste el historial de conversación en una base de datos H2.
 
 ### Arquitectura
 - **API REST** con Spring Boot
@@ -86,13 +86,13 @@ Assistant es una aplicación Spring Boot que funciona como chatbot bancario. Pro
 - **Integración con API externa** (Clima)
 
 ### Endpoints principales
-- `POST /api/v1/assistant/query` : Recibe una consulta y devuelve la respuesta procesada.
+- `POST /api/v1/assistant/query` : Recibe una consulta de usuario y retorna una respuesta procesada.
 
 #### Ejemplo de petición (Clima)
 ```json
 {
   "userId": "1234",
-  "userQuery": "¿Qué temperatura hace ciudad:Buenos Aires?"
+  "userQuery": "¿Cuál es el clima en ciudad:Buenos Aires?"
 }
 ```
 
