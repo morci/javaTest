@@ -7,9 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/assistant")
@@ -25,8 +25,7 @@ public class QueryController {
     
     @PostMapping("/query")
     public ResponseEntity<?> receiveQuery(@RequestBody QueryRequest request) {
-        
-        if (request.getUserId() == null || request.getUserQuery() == null) {
+        if (request == null || !StringUtils.hasLength(request.getUserId()) || !StringUtils.hasLength(request.getUserQuery())) {
             return new ResponseEntity<>("Invalid input: userId and userQuery are required.", HttpStatus.BAD_REQUEST);
         }
 
