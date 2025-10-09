@@ -17,20 +17,20 @@ Assistant is a Spring Boot application that acts as a chatbot capable of answeri
 #### Request Example (Weather)
 ```json
 {
-  "userId": "1234",
-  "userQuery": "What is the weather in city:Buenos Aires?"
+  "user_id": "1234",
+  "user_query": "What is the weather in city:Buenos Aires?"
 }
 ```
 
 #### Response Example
 ```json
 {
-  "conversationId": "...",
-  "userId": "1234",
-  "processedIntent": "INTENT_WEATHER_QUERY",
-  "assistantResponse": "The current weather in Buenos Aires is 25.5°C.",
-  "serviceStatus": "OK",
-  "processedTimestamp": "..."
+  "conversation_id": "...",
+  "user_id": "1234",
+  "processed_intent": "INTENT_WEATHER_QUERY",
+  "assistant_response": "The current weather in Buenos Aires is 25.5°C.",
+  "service_status": "OK",
+  "processed_timestamp": "..."
 }
 ```
 
@@ -65,8 +65,8 @@ curl --location 'http://localhost:8080/api/v1/assistant/query' \
 --header 'Content-Type: application/json' \
 --header 'Authorization: Bearer <token obtenido>' \
 --data '{
-    "userId": "a1b2c3d4-e5f6-4321-7890-000000000001",
-    "userQuery": "quisiera saber el clima ciudad: Buenos Aires."
+    "user_id": "a1b2c3d4-e5f6-4321-7890-000000000001",
+    "user_query": "quisiera saber el clima ciudad: Buenos Aires."
 }'
 ```
 
@@ -91,20 +91,20 @@ Assistant es una aplicación Spring Boot que funciona como un chatbot capaz de r
 #### Ejemplo de petición (Clima)
 ```json
 {
-  "userId": "1234",
-  "userQuery": "¿Cuál es el clima en ciudad:Buenos Aires?"
+  "user_id": "1234",
+  "user_query": "¿Cuál es el clima en ciudad:Buenos Aires?"
 }
 ```
 
 #### Ejemplo de respuesta
 ```json
 {
-  "conversationId": "...",
-  "userId": "1234",
-  "processedIntent": "INTENT_WEATHER_QUERY",
-  "assistantResponse": "El clima actual en Buenos Aires es de 25.5°C.",
-  "serviceStatus": "OK",
-  "processedTimestamp": "..."
+  "conversation_id": "...",
+  "user_id": "1234",
+  "processed_intent": "INTENT_WEATHER_QUERY",
+  "assistant_response": "El clima actual en Buenos Aires es de 25.5°C.",
+  "service_status": "OK",
+  "processed_timestamp": "..."
 }
 ```
 
@@ -139,8 +139,8 @@ curl --location 'http://localhost:8080/api/v1/assistant/query' \
 --header 'Content-Type: application/json' \
 --header 'Authorization: Bearer <token obtenido>' \
 --data '{
-    "userId": "a1b2c3d4-e5f6-4321-7890-000000000001",
-    "userQuery": "quisiera saber el clima ciudad: Buenos Aires."
+    "user_id": "a1b2c3d4-e5f6-4321-7890-000000000001",
+    "user_query": "quisiera saber el clima ciudad: Buenos Aires."
 }'
 ```
 

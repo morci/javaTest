@@ -2,10 +2,11 @@ package com.galicia.assistant.dto.auth;
 
 public class JwtAuthenticationResponse {
     private String accessToken;
-    private String tokenType = "Bearer";
+    private String tokenType;
     
     public JwtAuthenticationResponse(String accessToken) {
         this.accessToken = accessToken;
+        this.tokenType = "Bearer";
     }
 
     public String getAccessToken() {

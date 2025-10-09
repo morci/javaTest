@@ -59,9 +59,9 @@ class QueryControllerIntegrationTest {
                         .content(objectMapper.writeValueAsString(request)))
                 
                 .andExpect(status().isOk()) 
-                .andExpect(jsonPath("$.processedIntent", is("INTENT_WEATHER_QUERY")))
-                .andExpect(jsonPath("$.assistantResponse", containsString("25.5°C")))
-                .andExpect(jsonPath("$.serviceStatus", is("OK")));
+                .andExpect(jsonPath("$.processed_intent", is("INTENT_WEATHER_QUERY")))
+                .andExpect(jsonPath("$.assistant_response", containsString("25.5°C")))
+                .andExpect(jsonPath("$.service_status", is("OK")));
         
         verify(conversationRepository, times(1)).save(any());
     }
